@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<config>
+  <menu>
+    <system>
+      <children>
+        <tools>
+          <children>
+            <wsu_logger translate="title" module="wsu_logger">
+              <title>Logger</title>
+              <action>adminhtml/wsu_logger/index</action>
+              <sort_order>25</sort_order>
+            </wsu_logger>
+          </children>
+        </tools>
+      </children>
+    </system>
+  </menu>
+</config>
