@@ -14,9 +14,8 @@
       <wsu_logger_resource>
         <class>Wsu_Logger_Model_Resource</class>
         <entities>
-          <logger>
-            <table>wsu_logger_logger</table>
-          </logger>
+          <logger><table>wsu_logger_logger</table> </logger>
+		  <download_log><table>wsu_download_log</table></download_log>
         </entities>
       </wsu_logger_resource>
     </models>
