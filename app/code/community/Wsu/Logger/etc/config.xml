@@ -14,8 +14,12 @@
       <wsu_logger_resource>
         <class>Wsu_Logger_Model_Resource</class>
         <entities>
-          <logger><table>wsu_logger_logger</table> </logger>
-		  <download_log><table>wsu_download_log</table></download_log>
+          <logger>
+            <table>wsu_logger_logger</table>
+          </logger>
+          <download_log>
+            <table>wsu_download_log</table>
+          </download_log>
         </entities>
       </wsu_logger_resource>
     </models>
@@ -42,6 +46,17 @@
         <writer_model>Wsu_Logger_Model_Log_Writer_Stream</writer_model>
       </core>
     </log>
+    <events>
+      <controller_action_postdispatch_api>
+        <observers>
+          <apilog>
+            <type>singleton</type>
+            <class>apilog/observer</class>
+            <method>controller_action_postdispatch_api</method>
+          </apilog>
+        </observers>
+      </controller_action_postdispatch_api>
+    </events>
   </global>
   <admin>
     <routers>
@@ -54,4 +69,23 @@
       </adminhtml>
     </routers>
   </admin>
+  <default>
+    <wsu_logger>
+      <apilog>
+        <enablelogging>1</enablelogging>
+        <logformat>
+<![CDATA[REQUEST URI: ###REQUESTURI###
+CLIENT IP: ###CLIENTIP###
+REQUEST:
+====================
+###REQUEST###
+
+RESPONSE:
+====================
+###RESPONSE###]]>
+        </logformat>
+        <logfilename>api.log</logfilename>
+      </apilog>
+    </wsu_logger>
+  </default>
 </config>
