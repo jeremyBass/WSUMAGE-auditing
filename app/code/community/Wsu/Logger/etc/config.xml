@@ -20,8 +20,16 @@
           <download_log>
             <table>wsu_download_log</table>
           </download_log>
+		<stock_movement>
+			<table>wsu_stock_movement</table>
+		</stock_movement>
         </entities>
       </wsu_logger_resource>
+		<cataloginventory>
+			<rewrite>
+				<stock>Wsu_Logger_Model_CatalogInventory_Stock</stock>
+			</rewrite>
+		</cataloginventory>
     </models>
     <resources>
       <wsu_logger_setup>
@@ -56,6 +64,56 @@
           </apilog>
         </observers>
       </controller_action_postdispatch_api>
+            <checkout_submit_all_after>
+                <observers>
+                    <wsu_logger>
+                        <class>wsu_logger/stock_observer</class>
+                        <method>checkoutAllSubmitAfter</method>
+                    </wsu_logger>
+                </observers>
+            </checkout_submit_all_after>
+            <cataloginventory_stock_item_save_after>
+                <observers>
+                    <wsu_logger>
+                        <type>singleton</type>
+                        <class>wsu_logger/stock_observer</class>
+                        <method>saveStockItemAfter</method>
+                    </wsu_logger>
+                </observers>
+            </cataloginventory_stock_item_save_after>
+            <cataloginventory_stock_revert_products_sale>
+                <observers>
+                    <wsu_logger>
+                        <class>wsu_logger/stock_observer</class>
+                        <method>stockRevertProductsSale</method>
+                    </wsu_logger>
+                </observers>
+            </cataloginventory_stock_revert_products_sale>
+            <catalog_product_import_finish_before>
+                <observers>
+                    <wsu_logger>
+                        <class>wsu_logger/stock_observer</class>
+                        <method>catalogProductImportFinishBefore</method>
+                    </wsu_logger>
+                </observers>
+            </catalog_product_import_finish_before>
+            <controller_action_layout_render_before_adminhtml_catalog_product_edit>
+                <observers>
+                    <wsu_logger>
+                        <class>wsu_logger/stock_observer</class>
+                        <method>addStockMovementsTab</method>
+                    </wsu_logger>
+                </observers>
+            </controller_action_layout_render_before_adminhtml_catalog_product_edit>
+            <sales_order_item_cancel>
+                <observers>
+                    <inventory><type>disabled</type></inventory>
+                    <wsu_logger>
+                        <class>wsu_logger/stock_observer</class>
+                        <method>cancelOrderItem</method>
+                    </wsu_logger>
+                </observers>
+            </sales_order_item_cancel>
     </events>
   </global>
   <admin>
