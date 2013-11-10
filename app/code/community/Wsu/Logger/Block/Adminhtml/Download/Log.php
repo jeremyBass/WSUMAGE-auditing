@@ -4,7 +4,7 @@ class Wsu_Logger_Block_Adminhtml_Download_Log extends Mage_Adminhtml_Block_Widge
         parent::__construct();
         $this->_blockGroup = 'wsu_logger';
         $this->_controller = 'adminhtml_download_log';
-        $this->_headerText = Mage::helper('wsu_logger')->__('Product Downloads');
+        $this->_headerText = Mage::helper('wsu_logger')->__('Product Download logs');
         $this->_removeButton('add');
     }
     protected function _prepareLayout() {
