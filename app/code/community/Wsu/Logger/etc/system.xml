@@ -9,13 +9,13 @@
       <show_in_website>1</show_in_website>
       <show_in_store>1</show_in_store>
       <groups>
-        <!--<hint>
-          <frontend_model>wsu_newtworksecurities/adminhtml_system_config_fieldset_hint</frontend_model>
+        <hint>
+          <frontend_model>wsu_logger/adminhtml_system_config_fieldset_hint</frontend_model>
           <sort_order>0</sort_order>
           <show_in_default>1</show_in_default>
           <show_in_website>1</show_in_website>
           <show_in_store>1</show_in_store>
-        </hint>-->
+        </hint>
         <apilog translate="label comment">
           <label>API Logging</label>
           <sort_order>1000</sort_order>
