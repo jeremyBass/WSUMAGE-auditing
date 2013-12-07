@@ -50,8 +50,8 @@ class Wsu_Logger_Model_Stock_Observer {
             foreach ($stocks as $stockData) {
                 $stocksMovements[] = array(
                     'item_id' => $stockData['item_id'],
-                    'user' => $this->_getUsername(),
-                    'user_id' => $this->_getUserId(),
+                    'user' => Mage::helper('storeutilities/users')->_getUsername(),
+                    'user_id' => Mage::helper('storeutilities/users')->_getUserId(),
                     'qty' => $stockData['qty'],
                     'is_in_stock' => (int) $stockData['is_in_stock'],
                     'message' => 'Product import',
@@ -96,8 +96,18 @@ class Wsu_Logger_Model_Stock_Observer {
         }
     }
     public function insertStockMovement(Mage_CatalogInventory_Model_Stock_Item $stockItem, $message = '') {
-        Mage::getModel('wsu_logger/stock_movement')->setItemId($stockItem->getId())->setUser($this->_getUsername())->setUserId($this->_getUserId())->setIsAdmin((int) Mage::getSingleton('admin/session')->isLoggedIn())->setQty($stockItem->getQty())->setIsInStock((int) $stockItem->getIsInStock())->setMessage($message)->save();
-        Mage::getModel('catalog/product')->load($stockItem->getProductId())->cleanCache();
+        Mage::getModel('wsu_logger/stock_movement')
+			->setItemId($stockItem->getId())
+			->setUser(Mage::helper('storeutilities/users')->_getUsername())
+			->setUserId(Mage::helper('storeutilities/users')->_getUserId())
+			->setIsAdmin((int) Mage::getSingleton('admin/session')->isLoggedIn())
+			->setQty($stockItem->getQty())
+			->setIsInStock((int) $stockItem->getIsInStock())
+			->setMessage($message)
+			->save();
+        Mage::getModel('catalog/product')
+			->load($stockItem->getProductId())
+			->cleanCache();
     }
     public function saveStockItemAfter($observer) {
         $stockItem = $observer->getEvent()->getItem();
@@ -124,25 +134,5 @@ class Wsu_Logger_Model_Stock_Observer {
                 $this->insertStockMovement($stockItem, $message);
             }
         }
-    }
-    protected function _getUserId() {
-        $userId = null;
-        if (Mage::getSingleton('customer/session')->isLoggedIn()) {
-            $userId = Mage::getSingleton('customer/session')->getCustomerId();
-        } elseif (Mage::getSingleton('admin/session')->isLoggedIn()) {
-            $userId = Mage::getSingleton('admin/session')->getUser()->getId();
-        }
-        return $userId;
-    }
-    protected function _getUsername() {
-        $username = '-';
-        if (Mage::getSingleton('api/session')->isLoggedIn()) {
-            $username = Mage::getSingleton('api/session')->getUser()->getUsername();
-        } elseif (Mage::getSingleton('customer/session')->isLoggedIn()) {
-            $username = Mage::getSingleton('customer/session')->getCustomer()->getName();
-        } elseif (Mage::getSingleton('admin/session')->isLoggedIn()) {
-            $username = Mage::getSingleton('admin/session')->getUser()->getUsername();
-        }
-        return $username;
     }
 }

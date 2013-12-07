@@ -6,6 +6,7 @@
       <codePool>community</codePool>
       <depends>
         <Mage_Core/>
+		<Wsu_Storeutilities/>
       </depends>
     </Wsu_Logger>
   </modules>
