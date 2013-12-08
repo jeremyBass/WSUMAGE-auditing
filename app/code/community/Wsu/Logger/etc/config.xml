@@ -116,6 +116,19 @@
             </sales_order_item_cancel>
     </events>
   </global>
+    <adminhtml>
+        <events> 
+            <controller_action_layout_generate_blocks_after>
+                <observers>
+                    <wsu_logger_index>
+                        <type>singleton</type>
+                        <class>wsu_logger/observer</class>
+                        <method>addLoggerGridJavascriptBlock</method>
+                    </wsu_logger_index>
+                </observers>
+            </controller_action_layout_generate_blocks_after>
+        </events>       
+    </adminhtml>
   <admin>
     <routers>
       <adminhtml>

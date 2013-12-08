@@ -26,5 +26,12 @@ class Wsu_Logger_Model_Observer {
 
 		Mage::log($message, null, $fileName);
 	}
+    public function addLoggerGridJavascriptBlock($observer){
+        $controller = $observer->getAction();
+        $layout = $controller->getLayout();
+        $block = $layout->createBlock('adminhtml/template');
+        $block->setTemplate('wsu/logger/logger/grid/jsblock.phtml');        
+        $layout->getBlock('js')->append($block);
+    }
 
 }

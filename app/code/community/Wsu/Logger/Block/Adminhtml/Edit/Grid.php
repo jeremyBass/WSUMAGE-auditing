@@ -51,6 +51,25 @@ class Wsu_Logger_Block_Adminhtml_Edit_Grid extends Mage_Adminhtml_Block_Widget_G
             'index' => 'admin_id',
             'type' => 'text'
         ));
+        $this->addColumn('action',
+            array(
+                'header'    =>  Mage::helper('wsu_logger')->__('Action'),
+                'width'     => '100',
+                'type'      => 'action',
+                'getter'    => 'getId',
+                'actions'   => array(
+                    array(
+                        'caption'   => Mage::helper('wsu_logger')->__('full log'),
+                        'url'       => array('base'=> '*/*/fulllogjson'),
+						'field'     => 'log_id'
+                    )
+                ),
+				'class'		=> 'getFullLog',
+                'filter'    => false,
+                'sortable'  => false,
+                'index'     => 'stores',
+                'is_system' => true,
+        ));
         return parent::_prepareColumns();
     }
     public function getGridUrl() {
