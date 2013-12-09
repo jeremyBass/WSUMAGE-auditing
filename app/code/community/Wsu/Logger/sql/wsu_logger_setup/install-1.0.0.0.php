@@ -82,12 +82,8 @@ INDEX ( `item_id` )
 ");
 
 $installer->getConnection()->addConstraint('FK_STOCK_MOVEMENT_ITEM', $tableMovement, 'item_id', $tableItem, 'item_id');
-$installer->getConnection()->addConstraint('FK_STOCK_MOVEMENT_USER', $tableMovement, 'user_id', $tableUser, 'user_id', 'SET NULL');
-
-$tableMovement  = $installer->getTable('wsu_stock_movement');
-
-$installer->getConnection()->dropForeignKey($tableMovement, 'FK_STOCK_MOVEMENT_USER');
-
+//$installer->getConnection()->addConstraint('FK_STOCK_MOVEMENT_USER', $tableMovement, 'user_id', $tableUser, 'user_id', 'SET NULL');
+//$installer->getConnection()->dropForeignKey($tableMovement, 'FK_STOCK_MOVEMENT_USER');
 $installer->run("
     ALTER TABLE `{$tableMovement}`
         ADD COLUMN `is_admin` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0 AFTER `user_id`;
