@@ -1,0 +1,6 @@
+<?php
+class Wsu_Auditing_Model_Resource_Auditing extends Mage_Core_Model_Resource_Db_Abstract {
+    protected function _construct() {
+        $this->_init('wsu_auditing/auditing', 'audit_id');
+    }
+}
