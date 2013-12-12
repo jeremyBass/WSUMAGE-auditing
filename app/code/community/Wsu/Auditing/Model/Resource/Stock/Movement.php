@@ -15,7 +15,7 @@ class Wsu_Auditing_Model_Resource_Stock_Movement extends Mage_Core_Model_Resourc
     }
     public function getProductsIdBySku($skus) {
         $select = $this->getReadConnection()->select()->from($this->getTable('catalog/product'), array(
-            'audit_id'
+            'entity_id'
         ))->where('sku IN (?)', (array) $skus);
         return $this->getReadConnection()->fetchCol($select);
     }

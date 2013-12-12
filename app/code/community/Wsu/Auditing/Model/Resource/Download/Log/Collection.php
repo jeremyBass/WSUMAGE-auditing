@@ -6,7 +6,7 @@ class Wsu_Auditing_Model_Resource_Download_Log_Collection extends Mage_Core_Mode
     public function joinProduct() {
         $this->getSelect()->joinLeft(array(
             'product' => $this->getTable('catalog/product')
-        ), 'main_table.product_id = product.audit_id', array(
+        ), 'main_table.product_id = product.entity_id', array(
             'sku' => 'product.sku'
         ));
         return $this;
