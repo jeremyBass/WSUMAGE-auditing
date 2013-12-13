@@ -1,11 +1,4 @@
 <?php
-/**
- * Displays the logging history grid
- *
- * @category Wsu
- * @package  Wsu_Auditing
- * @author   Wsu Team <team@wsu.com>
- */
 class Wsu_Auditing_Block_Adminhtml_History_Grid extends Mage_Adminhtml_Block_Widget_Grid {
     /**
      * Grid constructor

@@ -8,7 +8,7 @@
 			<history module="wsu_auditing" translate="title">
 				<title>Admin Monitoring</title>
 				<sort_order>10</sort_order>
-				<action>adminhtml/history</action>
+				<action>adminhtml/history/index</action>
 			</history>
             <wsu_auditing translate="title" module="wsu_auditing">
               <title>Err./Warn. Logs</title>
