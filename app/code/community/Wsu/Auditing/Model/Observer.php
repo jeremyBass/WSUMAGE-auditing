@@ -30,8 +30,10 @@ class Wsu_Auditing_Model_Observer {
         $controller = $observer->getAction();
         $layout = $controller->getLayout();
         $block = $layout->createBlock('adminhtml/template');
-        $block->setTemplate('wsu/auditing/auditing/grid/jsblock.phtml');        
-        $layout->getBlock('js')->append($block);
+        $block->setTemplate('wsu/auditing/auditing/grid/jsblock.phtml');    
+		if($layout->getBlock('js')){    
+        	$layout->getBlock('js')->append($block);
+		}
     }
 
 }
