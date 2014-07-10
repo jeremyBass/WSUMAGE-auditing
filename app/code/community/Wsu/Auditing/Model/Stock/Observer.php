@@ -91,20 +91,23 @@ class Wsu_Auditing_Model_Stock_Observer {
         }
         if (!empty($stockItems)) {
             foreach ($stockItems as $data) {
-                $this->insertStockMovement($data['item'], sprintf('Product ordered (order%s: %s)', count($data['orders']) > 1 ? 's' : '', implode(', ', $data['orders'])));
+                $this->insertStockMovement($data['item'], sprintf('Product ordered (order%s: %s)', count($data['orders']) > 1 ? 's' : '', implode(', ', $data['orders'])),$data['orders']);
             }
         }
     }
-    public function insertStockMovement(Mage_CatalogInventory_Model_Stock_Item $stockItem, $message = '') {
-        Mage::getModel('wsu_auditing/stock_movement')
-			->setItemId($stockItem->getId())
-			->setUser(Mage::helper('storeutilities/users')->_getUsername())
-			->setUserId(Mage::helper('storeutilities/users')->_getUserId())
-			->setIsAdmin((int) Mage::getSingleton('admin/session')->isLoggedIn())
-			->setQty($stockItem->getQty())
-			->setIsInStock((int) $stockItem->getIsInStock())
-			->setMessage($message)
-			->save();
+    public function insertStockMovement(Mage_CatalogInventory_Model_Stock_Item $stockItem, $message = '', $order_id=0) {
+		$storeHistory = Mage::getModel('wsu_auditing/stock_movement');
+		
+        $storeHistory->setItemId($stockItem->getId());
+		$storeHistory->setUser(Mage::helper('storeutilities/users')->_getUsername());
+		$storeHistory->setUserId(Mage::helper('storeutilities/users')->_getUserId());
+		$storeHistory->setIsAdmin((int) Mage::getSingleton('admin/session')->isLoggedIn());
+		$storeHistory->setQty($stockItem->getQty());
+		$storeHistory->setOrderid(is_array($order_id)?implode(',', $order_id):$order_id);
+		$storeHistory->setIsInStock((int) $stockItem->getIsInStock());
+		$storeHistory->setMessage($message);
+		$storeHistory->save();
+		
         Mage::getModel('catalog/product')
 			->load($stockItem->getProductId())
 			->cleanCache();

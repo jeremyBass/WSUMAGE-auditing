@@ -181,7 +181,8 @@ DROP TABLE IF EXISTS {$tableMovement};
 CREATE TABLE {$tableMovement} (
 `movement_id` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 `item_id` INT( 10 ) UNSIGNED NOT NULL ,
-`user` varchar(40) NOT NULL DEFAULT '',
+`order_id` varchar(255) UNSIGNED NOT NULL ,
+`user` varchar(255) NOT NULL DEFAULT '',
 `user_id` mediumint(9) unsigned DEFAULT NULL,
 `qty` DECIMAL( 12, 4 ) NOT NULL default '0',
 `is_in_stock` TINYINT( 1 ) UNSIGNED NOT NULL default '0',
