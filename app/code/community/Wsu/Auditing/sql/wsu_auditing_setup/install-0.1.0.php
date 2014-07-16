@@ -1,9 +1,5 @@
 <?php
-
-
 //@todo needs to refactor this big time
-
-
 $installer = $this;
 $installer->startSetup();
 
