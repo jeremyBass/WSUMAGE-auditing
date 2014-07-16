@@ -7,7 +7,7 @@ class Wsu_Auditing_Model_Observer {
 			return;
 		}
 
-		$controllerAction = $observer->getControllerAction(); /* @var $controllerAction Mage_Api_IndexController */
+		$controllerAction = $observer->getControllerAction();
 
 		$logFormat = Mage::getStoreConfig('wsu_auditing/apilog/logformat');
 		if (empty($logFormat)) {
