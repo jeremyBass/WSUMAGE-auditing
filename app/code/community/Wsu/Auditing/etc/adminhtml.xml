@@ -3,7 +3,8 @@
   <menu>
     <system>
       <children>
-        <tools>
+					<auditing>
+						<title>Auditing</title>
           <children>
 			<history module="wsu_auditing" translate="title">
 				<title>Admin Monitoring</title>
@@ -26,7 +27,7 @@
 				<action>adminhtml/stock_movement/list</action>
 			</stock_movements>
           </children>
-        </tools>
+        </auditing>
       </children>
     </system>
     <catalog>
