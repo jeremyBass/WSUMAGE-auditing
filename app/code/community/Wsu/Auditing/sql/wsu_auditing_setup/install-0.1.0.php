@@ -173,27 +173,22 @@ $tableItem      = $installer->getTable('cataloginventory_stock_item');
 $tableUser      = $installer->getTable('admin/user');
 
 $installer->run("
-DROP TABLE IF EXISTS {$tableMovement};
-CREATE TABLE {$tableMovement} (
-`movement_id` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-`item_id` INT( 10 ) UNSIGNED NOT NULL ,
-`order_id` varchar(255) NOT NULL DEFAULT '',
-`user` varchar(255) NOT NULL DEFAULT '',
-`user_id` mediumint(9) unsigned DEFAULT NULL,
-`qty` DECIMAL( 12, 4 ) NOT NULL default '0',
-`is_in_stock` TINYINT( 1 ) UNSIGNED NOT NULL default '0',
-`message` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
-`created_at` DATETIME NOT NULL ,
-INDEX ( `item_id` )
-) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;
+	DROP TABLE IF EXISTS {$tableMovement};
+	CREATE TABLE {$tableMovement} (
+		`movement_id` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+		`item_id` INT( 10 ) UNSIGNED NOT NULL ,
+		`order_id` varchar(255) NOT NULL DEFAULT '',
+		`user` varchar(255) NOT NULL DEFAULT '',
+		`user_id` mediumint(9) unsigned DEFAULT NULL,
+		`qty` DECIMAL( 12, 4 ) NOT NULL default '0',
+		`is_in_stock` TINYINT( 1 ) UNSIGNED NOT NULL default '0',
+		`message` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
+		`is_admin` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0 AFTER `user_id`,
+		`created_at` DATETIME NOT NULL,
+	INDEX ( `item_id` )
+	) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT='Product stock movment log';
 ");
 
 $installer->getConnection()->addConstraint('FK_STOCK_MOVEMENT_ITEM', $tableMovement, 'item_id', $tableItem, 'item_id');
-//$installer->getConnection()->addConstraint('FK_STOCK_MOVEMENT_USER', $tableMovement, 'user_id', $tableUser, 'user_id', 'SET NULL');
-//$installer->getConnection()->dropForeignKey($tableMovement, 'FK_STOCK_MOVEMENT_USER');
-$installer->run("
-    ALTER TABLE `{$tableMovement}`
-        ADD COLUMN `is_admin` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0 AFTER `user_id`;
-");
 
 $installer->endSetup();
