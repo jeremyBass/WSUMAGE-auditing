@@ -42,9 +42,10 @@ $table = $installer->getConnection()
 	), 'File');
 $installer->getConnection()->createTable($table);
 
+$table_history = $installer->getTable('wsu_auditing/auditing');
+$installer->getConnection()->dropTable($table_history);
 
-
-$logTable = $installer->getConnection()->newTable($installer->getTable('wsu_auditing/history'))
+$logTable = $installer->getConnection()->newTable($table_history)
     ->addColumn( 'history_id', Varien_Db_Ddl_Table::TYPE_INTEGER,
         null,
         array(
@@ -55,11 +56,16 @@ $logTable = $installer->getConnection()->newTable($installer->getTable('wsu_audi
         ),
         'Primary key of the log entry'
     )
-    ->addColumn( 'data', Varien_Db_Ddl_Table::TYPE_TEXT,
+    ->addColumn( 'content', Varien_Db_Ddl_Table::TYPE_TEXT,
         null,
         array(),
         'data of the changed entity'
     )
+	->addColumn('content_diff',Varien_Db_Ddl_Table::TYPE_TEXT,
+		null,
+		array(),
+		'changed data of entity'
+	)
     ->addColumn( 'user_id', Varien_Db_Ddl_Table::TYPE_INTEGER,
         1,
         array(
@@ -128,28 +134,11 @@ $installer->getConnection()->addIndex(
     Varien_Db_Adapter_Interface::INDEX_TYPE_INDEX
 );
 
-$installer->getConnection()->changeColumn(
-    $installer->getTable('wsu_auditing/history'),
-    'data',
-    'content',
-    array(
-         'type'    => Varien_Db_Ddl_Table::TYPE_TEXT,
-         'size'    => null,
-         'comment' => 'data of changed entity'
-    )
-);
 
-$installer->getConnection()->addColumn(
-    $installer->getTable('wsu_auditing/history'),
-    'content_diff',
-    array(
-         'type'    => Varien_Db_Ddl_Table::TYPE_TEXT,
-         'size'    => null,
-         'comment' => 'changed data of entity'
-    )
-);
+
 
 $tableDownloadLog = $installer->getTable('wsu_download_log');
+$installer->getConnection()->dropTable($tableDownloadLog);
 $installer->run("
     DROP TABLE IF EXISTS `{$tableDownloadLog}`;
     CREATE TABLE `{$tableDownloadLog}` (
@@ -172,6 +161,7 @@ $tableMovement  = $installer->getTable('wsu_stock_movement');
 $tableItem      = $installer->getTable('cataloginventory_stock_item');
 $tableUser      = $installer->getTable('admin/user');
 
+$installer->getConnection()->dropTable($tableMovement);
 $installer->run("
 	DROP TABLE IF EXISTS {$tableMovement};
 	CREATE TABLE {$tableMovement} (
@@ -179,12 +169,12 @@ $installer->run("
 		`item_id` INT( 10 ) UNSIGNED NOT NULL ,
 		`order_id` varchar(255) NOT NULL DEFAULT '',
 		`user` varchar(255) NOT NULL DEFAULT '',
-		`user_id` mediumint(9) unsigned DEFAULT NULL,
+		`user_id` INT(10) UNSIGNED DEFAULT NULL,
 		`qty` DECIMAL( 12, 4 ) NOT NULL default '0',
 		`is_in_stock` TINYINT( 1 ) UNSIGNED NOT NULL default '0',
-		`message` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
-		`is_admin` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0 AFTER `user_id`,
-		`created_at` DATETIME NOT NULL,
+		`message` TEXT DEFAULT NULL,
+		`is_admin` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
+		`created_at` DATETIME NOT NULL default '0000-00-00 00:00:00',
 	INDEX ( `item_id` )
 	) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT='Product stock movment log';
 ");
