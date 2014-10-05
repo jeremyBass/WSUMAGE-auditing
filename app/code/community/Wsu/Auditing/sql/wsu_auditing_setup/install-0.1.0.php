@@ -3,121 +3,40 @@
 $installer = $this;
 $installer->startSetup();
 
-$tableDownloadLog = $installer->getTable('wsu_auditing/auditing');
-$installer->run(" DROP TABLE IF EXISTS `{$tableDownloadLog}`; ");
+$auditing_table = $installer->getTable('wsu_auditing/auditing');
+$installer->getConnection()->dropTable($auditing_table);
+$installer->run("
+    CREATE TABLE `{$auditing_table}` (
+        `audit_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        `admin_id` INT(10) UNSIGNED DEFAULT NULL,
+		`user_agent` TEXT NOT NULL,
+		`customer_id` INT(10) UNSIGNED DEFAULT NULL,
+		`timestamp` DATETIME NOT NULL default '0000-00-00 00:00:00',
+		`message` TEXT NOT NULL,
+		`trace` TEXT NOT NULL,
+		`priority` INT(2) NOT NULL,
+		`priority_name` VARCHAR(32) NOT NULL,
+        `file` TEXT NOT NULL
+    ) ENGINE=INNODB CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT='Err/Warn log';
+");
 
-$table = $installer->getConnection()
-	->newTable($installer->getTable('wsu_auditing/auditing'))
-	->addColumn('audit_id', Varien_Db_Ddl_Table::TYPE_INTEGER, null, array(
-		'identity' 	=> true,
-		'unsigned' 	=> true,
-		'nullable' 	=> false,
-		'primary' 	=> true
-	), 'Id')
-	->addColumn('admin_id', Varien_Db_Ddl_Table::TYPE_INTEGER, 2, array(
-		'nullable' 	=> false,
-		'default' 	=> "0"
-	), 'Priority')
-	->addColumn('customer_id', Varien_Db_Ddl_Table::TYPE_INTEGER, 2, array(
-		'nullable' 	=> false,
-		'default' 	=> "0"
-	), 'Priority')
-	->addColumn('timestamp', Varien_Db_Ddl_Table::TYPE_CHAR, 25, array(
-		'nullable' 	=> false
-	), 'Timestamp')
-	->addColumn('message', Varien_Db_Ddl_Table::TYPE_TEXT, null, array(
-		'nullable' 	=> false
-	), 'Message')
-	->addColumn('trace', Varien_Db_Ddl_Table::TYPE_TEXT, null, array(
-		'nullable' 	=> true
-	), 'Stacktrace')
-	->addColumn('priority', Varien_Db_Ddl_Table::TYPE_INTEGER, 2, array(
-		'nullable' 	=> false
-	), 'Priority')
-	->addColumn('priority_name', Varien_Db_Ddl_Table::TYPE_VARCHAR, 32, array(
-		'nullable' 	=> false
-	), 'Priority Name')
-	->addColumn('file', Varien_Db_Ddl_Table::TYPE_TEXT, null, array(
-		'nullable' 	=> false
-	), 'File');
-$installer->getConnection()->createTable($table);
-
-$table_history = $installer->getTable('wsu_auditing/auditing');
-$installer->getConnection()->dropTable($table_history);
-
-$logTable = $installer->getConnection()->newTable($table_history)
-    ->addColumn( 'history_id', Varien_Db_Ddl_Table::TYPE_INTEGER,
-        null,
-        array(
-             'identity' => true,
-             'unsigned' => true,
-             'nullable' => false,
-             'primary'  => true,
-        ),
-        'Primary key of the log entry'
-    )
-    ->addColumn( 'content', Varien_Db_Ddl_Table::TYPE_TEXT,
-        null,
-        array(),
-        'data of the changed entity'
-    )
-	->addColumn('content_diff',Varien_Db_Ddl_Table::TYPE_TEXT,
-		null,
-		array(),
-		'changed data of entity'
-	)
-    ->addColumn( 'user_id', Varien_Db_Ddl_Table::TYPE_INTEGER,
-        1,
-        array(
-             'unsigned' => true,
-             'nullable' => true,
-             'default'  => null,
-        ),
-        'user_id of the admin user'
-    )
-    ->addColumn( 'user_name', Varien_Db_Ddl_Table::TYPE_TEXT,
-        null,
-        array(),
-        'username of the admin user - to know which user it was after deletion'
-    )
-    ->addColumn( 'ip', Varien_Db_Ddl_Table::TYPE_TEXT,
-        null,
-        array(),
-        'ip of the admin user'
-    )
-    ->addColumn( 'created_at', Varien_Db_Ddl_Table::TYPE_DATETIME,
-        null,
-        array(),
-        'created at'
-    )
-    ->addColumn( 'user_agent', Varien_Db_Ddl_Table::TYPE_TEXT,
-        null,
-        array(),
-        'user agent used by user'
-    )
-    ->addColumn( 'action', Varien_Db_Ddl_Table::TYPE_INTEGER,
-        1,
-        array(
-             'unsigned' => true,
-             'nullable' => false,
-        ),
-        'action which is performed on the object'
-    )
-    ->addColumn( 'object_type', Varien_Db_Ddl_Table::TYPE_TEXT,
-        255,
-        array(),
-        'class name of the changed type'
-    )
-    ->addColumn( 'object_id', Varien_Db_Ddl_Table::TYPE_INTEGER,
-        null,
-        array(
-             'unsigned' => true,
-             'nullable' => false,
-        ),
-        'id of the changed type'
-    );
-
-$installer->getConnection()->createTable($logTable);
+$history_table = $installer->getTable('wsu_auditing/history');
+$installer->getConnection()->dropTable($history_table);
+$installer->run("
+    CREATE TABLE `{$history_table}` (
+        `history_id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        `user_id` INT(10) UNSIGNED DEFAULT NULL,
+		`user_name` VARCHAR(32) NOT NULL,
+		`user_agent` TEXT NOT NULL,
+		`created_at` DATETIME NOT NULL default '0000-00-00 00:00:00',
+		`content` TEXT NOT NULL,
+		`content_diff` TEXT NOT NULL,
+		`object_id` INT(10) UNSIGNED DEFAULT NULL,
+		`object_type` VARCHAR(255) NOT NULL,
+		`action` INT(2) NOT NULL,
+        `ip` VARCHAR(32) NOT NULL
+    ) ENGINE=INNODB CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT='Product stock log';
+");
 
 $installer->getConnection()->addIndex(
     $installer->getTable('wsu_auditing/history'),
