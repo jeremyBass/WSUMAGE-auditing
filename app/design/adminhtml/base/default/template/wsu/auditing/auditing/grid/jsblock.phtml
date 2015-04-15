@@ -1,3 +1,19 @@
+<style>
+.issue_label{ font-weight:bold; }
+.issue_content{ display:block; }
+.ui-widget {
+    font-family: "Hind",sans-serif !important;
+}
+.stack_number{font-size:.95em; font-weight:400;}
+.stack_item{
+	font-size:.75em;
+	font-style:italic;
+}
+.stack_header{
+	font-weight:900;
+}
+</style>
+
 <script type="text/javascript">
 (function($){
 	$(function(){
@@ -19,15 +35,27 @@
 						 dataType: 'jsonp',
 						 success: function(json) {
 							html="";
-							html +="audit_id :: "+json.audit_id+"<br/>";
-							html +="admin_id :: "+json.admin_id+"<br/>";
-							html +="customer_id :: "+json.customer_id+"<br/>";
-							html +="timestamp :: "+json.timestamp+"<br/>";
-							html +="message :: "+json.message+"<br/>";
-							html +="trace :: "+json.trace+"<br/>";
-							html +="priority :: "+json.priority+"<br/>";
-							html +="priority_name :: "+json.priority_name+"<br/>";
-							html +="file :: "+json.file+"<br/>";
+							html +="<span class='issue_label'>audit_id ::</span> <span class='issue_content'>"+json.audit_id+"</span>";
+							html +="<span class='issue_label'>admin_id ::</span> <span class='issue_content'>"+json.admin_id+"</span>";
+							html +="<span class='issue_label'>customer_id ::</span> <span class='issue_content'>"+json.customer_id+"</span>";
+							html +="<span class='issue_label'>timestamp ::</span> <span class='issue_content'>"+json.timestamp+"</span>";
+							
+							var pattern = /(\s#\d+\s)/igm;
+							message = json.message.replace( pattern, "<br/>&nbsp;&nbsp;&nbsp;&nbsp;<span class='stack_number'>$1</span><span class='stack_item'>" );
+							var pattern = /(stack_item'>.*?<br\/>)/igm;
+							message = message.replace( pattern, "$1</span>" );
+							message = message.split('Stack trace:').join('<br/>&nbsp;&nbsp;<span class="stack_header"> Stack trace: </span>');
+							html +="<span class='issue_label'>message ::</span> <span class='issue_content'>"+message+"</span></span>";
+							
+							 
+							var pattern = /(\[\d+\])/igm;
+							trace = json.trace.replace( pattern, "<br/>&nbsp;&nbsp;&nbsp;&nbsp;<span class='stack_number'>$1</span><span class='stack_item'>" );
+							var pattern = /(stack_item'>.*?<br\/>)/igm;
+							trace = trace.replace( pattern, "$1</span>" );
+							html +="<span class='issue_label'>trace ::</span> <span class='issue_content'>"+trace+"</span></span>";
+							html +="<span class='issue_label'>priority ::</span> <span class='issue_content'>"+json.priority+"</span>";
+							html +="<span class='issue_label'>priority_name ::</span> <span class='issue_content'>"+json.priority_name+"</span>";
+							html +="<span class='issue_label'>file ::</span> <span class='issue_content'>"+json.file+"</span>";
 		
 							jQuery('body').append('<div id="dialog-message">'+html+'</div>');
 						 },
@@ -42,6 +70,10 @@
 					maxWidth:700,
 					minHeight:350,
 					minWidth:400,
+					width:$(window).width() * 0.75,
+					open:function(){
+						$('body').css({overflow:"hidden"});
+					},
 					buttons: {
 						Ok: function() {
 							jQuery( this ).dialog( "close" );
@@ -50,6 +82,9 @@
 					close:function( event, ui ){
 						jQuery( this ).dialog( "destroy" );
 						jQuery( "#dialog-message" ).remove();
+						if($(".ui-dialog.ui-widget.ui-widget-content").length<=0){
+							$('body').css({overflow:"auto"});
+						}
 					}
 				});
 			}
